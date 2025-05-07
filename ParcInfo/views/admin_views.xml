@@ -1,0 +1,35 @@
+<odoo>
+<record id="view_parc_admin_list" model="ir.ui.view">
+    <field name="name">parc.admin.list</field>
+    <field name="model">parc.admin</field>
+    <field name="arch" type="xml">
+        <list>
+            <field name="name"/>
+            <field name="email"/>
+        </list>
+    </field>
+</record>
+
+<record id="view_parc_admin_form" model="ir.ui.view">
+    <field name="name">parc.admin.form</field>
+    <field name="model">parc.admin</field>
+    <field name="arch" type="xml">
+        <form>
+            <group>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="password" password="True"/>
+                <field name="role"/>
+            </group>
+        </form>
+    </field>
+</record>
+<record id="Admin_action" model="ir.actions.act_window">
+    <field name="name">Administrateur</field>
+    <field name="res_model">parc.admin</field>
+    <field name="view_mode">list,form</field>
+    <field name="help" type="html">
+        <p>Gérez ici les administrateurs du système de gestion de parc informatique.</p>
+    </field>
+</record>
+</odoo>

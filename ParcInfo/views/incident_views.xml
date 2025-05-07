@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue liste des incidents -->
+    <record id="view_parc_incident_list" model="ir.ui.view">
+        <field name="name">parc.incident.list</field>
+        <field name="model">parc.incident</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <field name="date_reported"/>
+                <field name="priority" widget="priority"/>
+                <field name="assignee_id"/>
+                <field name="state" widget="badge" decoration-success="state == 'resolved'" decoration-info="state == 'in_progress'" decoration-warning="state == 'waiting'" decoration-danger="state == 'new'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Vue formulaire des incidents -->
+    <record id="view_parc_incident_form" model="ir.ui.view">
+        <field name="name">parc.incident.form</field>
+        <field name="model">parc.incident</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_set_in_progress" string="En cours" type="object" class="oe_highlight" invisible="state != 'new'"/>
+                    <button name="action_set_waiting" string="En attente" type="object" invisible="state not in ('new', 'in_progress')"/>
+                    <button name="action_resolve" string="Résoudre" type="object" class="oe_highlight" invisible="state not in ('in_progress', 'waiting')"/>
+                    <button name="action_close" string="Fermer" type="object" class="oe_highlight" invisible="state != 'resolved'"/>
+                    <button name="create_helpdesk_ticket" string="Créer Ticket" type="object" class="btn-secondary" invisible="ticket_id"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,waiting,resolved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="client_id"/>
+                            <field name="equipment_id"/>
+                            <field name="reported_by"/>
+                            <field name="ticket_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_reported"/>
+                            <field name="date_fixed" readonly="1" invisible="not date_fixed"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="assignee_id"/>
+                            <field name="intervention_time" widget="float_time" invisible="state not in ('resolved', 'closed')"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description" placeholder="Décrivez l'incident..."/>
+                        </page>
+                        <page string="Solution" invisible="state not in ('resolved', 'closed')">
+                            <field name="solution" placeholder="Décrivez la solution appliquée..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Vue de recherche pour les incidents -->
+    <record id="view_parc_incident_search" model="ir.ui.view">
+        <field name="name">parc.incident.search</field>
+        <field name="model">parc.incident</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="equipment_id"/>
+                <field name="assignee_id"/>
+                <separator/>
+                <filter string="Nouveaux" name="filter_new" domain="[('state', '=', 'new')]"/>
+                <filter string="En cours" name="filter_in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="En attente" name="filter_waiting" domain="[('state', '=', 'waiting')]"/>
+                <filter string="Résolus" name="filter_resolved" domain="[('state', '=', 'resolved')]"/>
+                <separator/>
+                <filter string="Priorité haute" name="filter_high_priority" domain="[('priority', 'in', ['2', '3'])]"/>
+                <filter string="Mes incidents" name="filter_my_incidents" domain="[('assignee_id', '=', uid)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Client" name="groupby_client" context="{'group_by': 'client_id'}"/>
+                    <filter string="Équipement" name="groupby_equipment" context="{'group_by': 'equipment_id'}"/>
+                    <filter string="État" name="groupby_state" context="{'group_by': 'state'}"/>
+                    <filter string="Assigné à" name="groupby_assignee" context="{'group_by': 'assignee_id'}"/>
+                    <filter string="Date de signalement" name="groupby_date" context="{'group_by': 'date_reported:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Action pour les incidents -->
+    <record id="incident_action" model="ir.actions.act_window">
+        <field name="name">Incidents</field>
+        <field name="res_model">parc.incident</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_new': 1, 'search_default_filter_in_progress': 1}</field>
+    </record>
+</odoo>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Vue formulaire -->
+  <record id="view_form_client_it" model="ir.ui.view">
+    <field name="name">parc.client.form</field>
+    <field name="model">parc.client</field>
+    <field name="arch" type="xml">
+      <form string="Client Parc IT">
+        <sheet>
+          <div class="oe_title">
+            <h1>
+              <field name="name" placeholder="Nom du client"/>
+            </h1>
+          </div>
+          <group>
+            <field name="partner_id"/>
+            <field name="technical_contact_id"/>
+            <field name="active"/>
+            <field name="company_id" groups="base.group_multi_company"/>
+          </group>
+          <notebook>
+            <page string="Parc IT">
+              <field name="asset_ids">
+                <list>
+                  <field name="name"/>
+                  <field name="type_id"/>
+                  <field name="state"/>
+                </list>
+              </field>
+            </page>
+            <page string="Contrats IT">
+              <field name="contract_ids">
+                <list>
+                  <field name="name"/>
+                  <field name="start_date"/>
+                  <field name="recurring_interval"/>
+                </list>
+              </field>
+            </page>
+          </notebook>
+        </sheet>
+        <div class="oe_chatter">
+          <field name="message_follower_ids"/>
+          <field name="activity_ids"/>
+          <field name="message_ids"/>
+        </div>
+      </form>
+    </field>
+  </record>
+
+  <!-- Action -->
+  <record id="client_action" model="ir.actions.act_window">
+    <field name="name">Clients</field>
+    <field name="res_model">parc.client</field>
+    <field name="view_mode">form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        Créez votre premier client
+      </p>
+    </field>
+  </record>
+</odoo>

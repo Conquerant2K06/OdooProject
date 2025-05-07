@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Intégration au menu d'accueil du portail -->
+    <template id="portal_my_home_equipment" name="Equipements in Portal" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="equipment_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Mes équipements</t>
+                <t t-set="url" t-value="'/my/equipments'"/>
+                <t t-set="count" t-value="equipment_count"/>
+            </t>
+        </xpath>
+    </template>
+    
+    <!-- Intégration aux fil d'Ariane du portail -->
+    <template id="portal_breadcrumbs_equipment" name="Portal Breadcrumbs for Equipments" inherit_id="portal.portal_breadcrumbs">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'equipments'" class="breadcrumb-item">
+                <a t-if="equipment" t-attf-href="/my/equipments">Équipements</a>
+                <t t-else="">Équipements</t>
+            </li>
+            <li t-if="equipment" class="breadcrumb-item active">
+                <t t-esc="equipment.name"/>
+            </li>
+            <li t-if="page_name == 'equipment_incidents'" class="breadcrumb-item">
+                <a t-attf-href="/my/equipment/#{equipment.id}">
+                    <t t-esc="equipment.name"/>
+                </a>
+            </li>
+            <li t-if="page_name == 'equipment_incidents'" class="breadcrumb-item active">
+                Incidents
+            </li>
+        </xpath>
+    </template>
+    
+    <!-- Template pour la liste des équipements -->
+    <template id="portal_my_equipments" name="My Equipments">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            
+            <div class="o_portal_search_panel mb-4">
+                <h3>Mes équipements</h3>
+                
+                <!-- Options de tri -->
+                <div t-if="searchbar_sortings" class="row">
+                    <div class="col-lg-6">
+                        <div class="btn-group" role="group">
+                            <t t-foreach="searchbar_sortings" t-as="option_key">
+                                <a t-att-class="sortby == option_key and 'btn btn-secondary' or 'btn btn-light'" t-att-href="'/my/equipments' + '?' + keep_query('*', sortby=option_key)">
+                                    <t t-esc="searchbar_sortings[option_key]['label']"/>
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Options de filtrage -->
+                <div t-if="searchbar_filters" class="row mt-3">
+                    <div class="col-lg-6">
+                        <div class="btn-group" role="group">
+                            <t t-foreach="searchbar_filters" t-as="option_key">
+                                <a t-att-class="filterby == option_key and 'btn btn-secondary' or 'btn btn-light'" t-att-href="'/my/equipments' + '?' + keep_query('*', filterby=option_key)">
+                                    <t t-esc="searchbar_filters[option_key]['label']"/>
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Message si aucun équipement -->
+            <div t-if="not equipments" class="alert alert-info">
+                <p>Vous n'avez aucun équipement.</p>
+            </div>
+            
+            <!-- Liste des équipements -->
+            <div t-if="equipments" class="o_portal_my_doc_table mt-4">
+                <div class="table-responsive">
+                    <table class="table table-hover o_portal_my_doc_table">
+                        <thead>
+                            <tr class="active">
+                                <th>Référence</th>
+                                <th>Nom</th>
+                                <th>Type</th>
+                                <th>État</th>
+                                <th>Date d'installation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="equipments" t-as="equipment">
+                                <td>
+                                    <a t-attf-href="/my/equipment/#{equipment.id}">
+                                        <span t-field="equipment.reference"/>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a t-attf-href="/my/equipment/#{equipment.id}">
+                                        <span t-field="equipment.name"/>
+                                    </a>
+                                </td>
+                                <td><span t-field="equipment.type_id.name"/></td>
+                                <td>
+                                    <span t-field="equipment.state" t-options='{"widget": "badge", "classes": {"draft": "bg-secondary", "allocated": "bg-info", "in_use": "bg-success", "maintenance": "bg-warning", "end_of_life": "bg-danger"}}' />
+                                </td>
+                                <td><span t-field="equipment.installation_date" t-options='{"widget": "date"}'/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div t-if="pager" class="o_portal_pager text-center mt-4">
+                    <t t-call="portal.pager"/>
+                </div>
+            </div>
+        </t>
+    </template>
+    
+    <!-- Template pour la page de détail d'un équipement -->
+    <template id="portal_equipment_page" name="Equipment Details">
+        <t t-call="portal.portal_layout">
+            <div class="container o_portal_equipment_page mt-4">
+                <!-- En-tête avec nom et état -->
+                <div class="row mb-4">
+                    <div class="col-lg-10">
+                        <h2>
+                            <span t-field="equipment.name"/>
+                            <span t-if="equipment.is_software" class="badge badge-pill badge-info ml-2">Logiciel</span>
+                        </h2>
+                    </div>
+                    <div class="col-lg-2 text-right">
+                        <span t-field="equipment.state" t-options='{"widget": "badge", "classes": {"draft": "bg-secondary", "allocated": "bg-info", "in_use": "bg-success", "maintenance": "bg-warning", "end_of_life": "bg-danger"}}' />
+                    </div>
+                </div>
+
+                <!-- Section des informations générales -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Informations générales</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Colonne 1 -->
+                                    <div class="col-lg-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-md-4 font-weight-bold">Référence</label>
+                                            <div class="col-md-8">
+                                                <span t-field="equipment.reference"/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-md-4 font-weight-bold">Numéro de série</label>
+                                            <div class="col-md-8">
+                                                <span t-field="equipment.serial_number"/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-md-4 font-weight-bold">Type</label>
+                                            <div class="col-md-8">
+                                                <span t-field="equipment.type_id.name"/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-md-4 font-weight-bold">Modèle</label>
+                                            <div class="col-md-8">
+                                                <span t-field="equipment.model"/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-md-4 font-weight-bold">Marque</label>
+                                            <div class="col-md-8">
+                                                <span t-field="equipment.brand"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Colonne 2 -->
+                                    <div class="col-lg-6">
+                                        <div class="mb-3 row">
+                                            <label class="col-md-4 font-weight-bold">Date d'installation</label>
+                                            <div class="col-md-8">
+                                                <span t-field="equipment.installation_date" t-options='{"widget": "date"}'/>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-md-4 font-weight-bold">Fin de garantie</label>
+                                            <div class="col-md-8">
+                                                <span t-field="equipment.warranty_end_date" t-options='{"widget": "date"}'/>
+                                            </div>
+                                        </div>
+                                        <!-- Informations spécifiques aux logiciels -->
+                                        <t t-if="equipment.is_software">
+                                            <div class="mb-3 row">
+                                                <label class="col-md-4 font-weight-bold">Clé de licence</label>
+                                                <div class="col-md-8">
+                                                    <span t-field="equipment.license_key"/>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3 row">
+                                                <label class="col-md-4 font-weight-bold">Expiration de licence</label>
+                                                <div class="col-md-8">
+                                                    <span t-field="equipment.license_expiry" t-options='{"widget": "date"}'/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                        <div class="mb-3 row">
+                                            <label class="col-md-4 font-weight-bold">Utilisateur final</label>
+                                            <div class="col-md-8">
+                                                <span t-field="equipment.user_id.name"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notes -->
+                <div t-if="equipment.notes" class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Notes</h5>
+                            </div>
+                            <div class="card-body">
+                                <p t-field="equipment.notes"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Section des incidents -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Historique des incidents</h5>
+                                <a t-if="incidents" t-attf-href="/my/equipment/#{equipment.id}/incidents" class="btn btn-sm btn-secondary">
+                                    Voir tous les incidents
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <div t-if="not incidents" class="alert alert-info">
+                                    <p>Aucun incident n'a été signalé pour cet équipement.</p>
+                                </div>
+                                
+                                <div t-if="incidents" class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Référence</th>
+                                                <th>Date</th>
+                                                <th>Description</th>
+                                                <th>État</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="incidents[:5]" t-as="incident">
+                                                <td><span t-field="incident.name"/></td>
+                                                <td><span t-field="incident.create_date" t-options='{"widget": "date"}'/></td>
+                                                <td><span t-field="incident.description" t-options='{"widget": "text"}'/></td>
+                                                <td>
+                                                    <span t-field="incident.state" t-options='{"widget": "badge"}'/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+    
+    <!-- Template pour la page des incidents d'un équipement -->
+    <template id="portal_equipment_incidents" name="Equipment Incidents">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-4">
+                <h2 class="mb-4">Incidents de l'équipement <span t-field="equipment.name"/></h2>
+                
+                <div t-if="not incidents" class="alert alert-info">
+                    <p>Aucun incident n'a été signalé pour cet équipement.</p>
+                </div>
+                
+                <div t-if="incidents" class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Référence</th>
+                                        <th>Date</th>
+                                        <th>Description</th>
+                                        <th>Priorité</th>
+                                        <th>État</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="incidents" t-as="incident">
+                                        <td><span t-field="incident.name"/></td>
+                                        <td><span t-field="incident.create_date" t-options='{"widget": "date"}'/></td>
+                                        <td><span t-field="incident.description" t-options='{"widget": "text"}'/></td>
+                                        <td><span t-field="incident.priority"/></td>
+                                        <td>
+                                            <span t-field="incident.state" t-options='{"widget": "badge"}'/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a t-attf-href="/my/equipment/#{equipment.id}" class="btn btn-secondary">
+                        Retour à l'équipement
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Séquence pour les équipements -->
+        <record id="seq_parc_equipment" model="ir.sequence">
+            <field name="name">Séquence Équipement</field>
+            <field name="code">parc.equipment.sequence</field>
+            <field name="prefix">EQP/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+        <!-- Séquence pour les incidents -->
+        <record id="seq_parc_incident" model="ir.sequence">
+            <field name="name">Séquence Incident</field>
+            <field name="code">parc.incident.sequence</field>
+            <field name="prefix">INC/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+        
+        <!-- Séquence pour les factures -->
+        <record id="seq_parc_invoice" model="ir.sequence">
+            <field name="name">Séquence Facture Parc</field>
+            <field name="code">parc.invoice.sequence</field>
+            <field name="prefix">PINV/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <record id="seq_parc_facture" model="ir.sequence">
+        <field name="name">Facture</field>
+        <field name="code">parc.facture.sequence</field>
+        <field name="prefix">FCT</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="implementation">standard</field>
+    </record>
+    
+    </data>
+</odoo>

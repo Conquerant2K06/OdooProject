@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Formulaire de facture -->
+    <record id="view_parc_invoice_form" model="ir.ui.view">
+        <field name="name">parc.invoice.form</field>
+        <field name="model">parc.invoice</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_generate_invoice" string="Générer la facture" type="object" class="oe_highlight" 
+                            invisible="state != 'draft'"/>
+                    <button name="action_set_paid" string="Marquer comme payé" type="object" class="oe_highlight"
+                            invisible="state != 'invoiced'"/>
+                    <button name="action_cancel" string="Annuler" type="object" 
+                            invisible="state in ('paid', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,invoiced,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="contract_id" options="{'no_create': True}" readonly="state != 'draft'"/>
+                            <field name="client_id" readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="invoice_date" readonly="state != 'draft'"/>
+                            <field name="due_date" readonly="state != 'draft'"/>
+                            <field name="amount" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Facture comptable" invisible="not invoice_id">
+                        <field name="invoice_id" readonly="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue liste des factures -->
+    <record id="view_parc_invoice_list" model="ir.ui.view">
+        <field name="name">parc.invoice.list</field>
+        <field name="model">parc.invoice</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'draft'" decoration-success="state == 'paid'" decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="contract_id"/>
+                <field name="client_id"/>
+                <field name="invoice_date"/>
+                <field name="due_date"/>
+                <field name="amount" sum="Total" widget="monetary"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vue recherche -->
+    <record id="view_parc_invoice_search" model="ir.ui.view">
+        <field name="name">parc.invoice.search</field>
+        <field name="model">parc.invoice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="contract_id"/>
+                <field name="client_id"/>
+                <separator/>
+                <filter string="Brouillon" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Facturé" name="invoiced" domain="[('state', '=', 'invoiced')]"/>
+                <filter string="Payé" name="paid" domain="[('state', '=', 'paid')]"/>
+                <filter string="Annulé" name="cancelled" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Ce mois" name="this_month" domain="[('invoice_date', '&gt;=', (context_today() + relativedelta(day=1)).strftime('%Y-%m-%d')), ('invoice_date', '&lt;=', (context_today() + relativedelta(months=1, day=1, days=-1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Client" name="client" context="{'group_by': 'client_id'}"/>
+                    <filter string="Contrat" name="contract" context="{'group_by': 'contract_id'}"/>
+                    <filter string="État" name="state" context="{'group_by': 'state'}"/>
+                    <filter string="Date de facturation" name="invoice_date" context="{'group_by': 'invoice_date'}"/>
+                    <filter string="Société" name="company" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Vue calendrier -->
+    <record id="view_parc_invoice_calendar" model="ir.ui.view">
+        <field name="name">parc.invoice.calendar</field>
+        <field name="model">parc.invoice</field>
+        <field name="arch" type="xml">
+            <calendar date_start="invoice_date" color="state">
+                <field name="name"/>
+                <field name="client_id"/>
+                <field name="amount" widget="monetary"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Vue pivot -->
+    <record id="view_parc_invoice_pivot" model="ir.ui.view">
+        <field name="name">parc.invoice.pivot</field>
+        <field name="model">parc.invoice</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="invoice_date" type="row"/>
+                <field name="client_id" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vue graphique -->
+    <record id="view_parc_invoice_graph" model="ir.ui.view">
+        <field name="name">parc.invoice.graph</field>
+        <field name="model">parc.invoice</field>
+        <field name="arch" type="xml">
+            <graph>
+                <field name="invoice_date"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Action pour ouvrir les factures -->
+    <record id="action_parc_invoice" model="ir.actions.act_window">
+        <field name="name">Factures</field>
+        <field name="res_model">parc.invoice</field>
+        <field name="view_mode">list,form,calendar,pivot,graph</field>
+        <field name="context">{'search_default_draft': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer votre première facture
+            </p>
+            <p>
+                Les factures sont générées automatiquement à partir des contrats récurrents
+                ou peuvent être créées manuellement.
+            </p>
+        </field>
+    </record>
+
+    <!-- Séquence pour les factures -->
+    <record id="seq_parc_invoice" model="ir.sequence">
+        <field name="name">Séquence Factures Parc Informatique</field>
+        <field name="code">parc.invoice.sequence</field>
+        <field name="prefix">FACT/%(year)s/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+ 
+              
+   
+</odoo>

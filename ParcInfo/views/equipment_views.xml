@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vue liste des types d'équipements -->
+    <record id="view_parc_equipment_type_list" model="ir.ui.view">
+        <field name="name">parc.equipment.type.list</field>
+        <field name="model">parc.equipment.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="code"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Vue formulaire des types d'équipements -->
+    <record id="view_parc_equipment_type_form" model="ir.ui.view">
+        <field name="name">parc.equipment.type.form</field>
+        <field name="model">parc.equipment.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="code"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Vue liste des équipements -->
+    <record id="view_parc_equipment_list" model="ir.ui.view">
+        <field name="name">parc.equipment.list</field>
+        <field name="model">parc.equipment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="reference"/>
+                <field name="name"/>
+                <field name="type_id"/>
+                <field name="client_id"/>
+                <field name="user_id"/>
+                <field name="installation_date"/>
+                <field name="warranty_end_date" decoration-danger="warranty_end_date and warranty_end_date &lt; current_date"/>
+                <field name="state" widget="badge"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+    
+    <!-- Vue formulaire des équipements -->
+    <record id="view_parc_equipment_form" model="ir.ui.view">
+        <field name="name">parc.equipment.form</field>
+        <field name="model">parc.equipment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_incidents" type="object" class="oe_stat_button" icon="fa-wrench">
+                            <field name="incident_count" widget="statinfo" string="Incidents"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                        <h2>
+                            <field name="name" placeholder="Nom de l'équipement"/>
+                        </h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="client_id"/>
+                            <field name="user_id"/>
+                            <field name="type_id"/>
+                            <field name="brand"/>
+                            <field name="model"/>
+                            <field name="serial_number"/>
+                        </group>
+                        <group>
+                            <field name="installation_date"/>
+                            <field name="warranty_end_date"/>
+                            <field name="contract_id"/>
+                            <field name="is_software"/>
+                            <field name="license_key" invisible="not is_software"/>
+                            <field name="license_expiry" invisible="not is_software"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                        <page string="Incidents">
+                            <field name="incident_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date_reported"/>
+                                    <field name="priority" widget="priority"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Vue de recherche pour les équipements -->
+    <record id="view_parc_equipment_search" model="ir.ui.view">
+        <field name="name">parc.equipment.search</field>
+        <field name="model">parc.equipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="serial_number"/>
+                <field name="client_id"/>
+                <field name="user_id"/>
+                <filter string="Matériel" name="filter_hardware" domain="[('is_software', '=', False)]"/>
+                <filter string="Logiciel" name="filter_software" domain="[('is_software', '=', True)]"/>
+                <separator/>
+                <filter string="En service" name="filter_in_use" domain="[('state', '=', 'in_use')]"/>
+                <filter string="En maintenance" name="filter_maintenance" domain="[('state', '=', 'maintenance')]"/>
+                <filter string="Fin de vie" name="filter_eol" domain="[('state', '=', 'end_of_life')]"/>
+                <separator/>
+                <filter string="Garantie expirée" name="filter_warranty_expired" domain="[('warranty_end_date', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Licence expirée" name="filter_license_expired" domain="[('is_software', '=', True), ('license_expiry', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Client" name="groupby_client" context="{'group_by': 'client_id'}"/>
+                    <filter string="Type" name="groupby_type" context="{'group_by': 'type_id'}"/>
+                    <filter string="État" name="groupby_state" context="{'group_by': 'state'}"/>
+                    <filter string="Date d'installation" name="groupby_installation" context="{'group_by': 'installation_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+    <!-- Action pour les types d'équipements -->
+    <record id="action_parc_equipment_type" model="ir.actions.act_window">
+        <field name="name">Types d'équipements</field>
+        <field name="res_model">parc.equipment.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    
+    <!-- Action pour les équipements -->
+    <record id="action_parc_equipment" model="ir.actions.act_window">
+        <field name="name">Équipements</field>
+        <field name="res_model">parc.equipment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+
+</odoo>

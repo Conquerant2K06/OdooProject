@@ -1,0 +1,41 @@
+<odoo>
+  <!-- Vue formulaire déjà fournie -->
+  <record id="view_form_it_intervention" model="ir.ui.view">
+    <field name="name">parc.intervention.form</field>
+    <field name="model">parc.intervention</field>
+    <field name="arch" type="xml">
+      <form string="Intervention">
+        <sheet>
+          <group>
+            <field name="date"/>
+            <field name="asset_id"/>
+            <field name="technicien_id"/>
+            <field name="description"/>
+            <field name="resultat"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <!-- Vue list (obligatoire pour que l'action fonctionne correctement) -->
+  <record id="view_list_it_intervention" model="ir.ui.view">
+    <field name="name">parc.intervention.list</field>
+    <field name="model">parc.intervention</field>
+    <field name="arch" type="xml">
+      <list string="Interventions">
+        <field name="date"/>
+        <field name="asset_id"/>
+        <field name="technicien_id"/>
+        <field name="resultat"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="intervention_action" model="ir.actions.act_window">
+    <field name="name">Interventions</field>
+    <field name="res_model">parc.intervention</field>
+    <field name="view_mode">list,form</field>
+</record>
+
+</odoo>

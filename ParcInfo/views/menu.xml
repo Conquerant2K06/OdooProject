@@ -1,0 +1,10 @@
+<odoo>
+    <menuitem id="ParcInfo_menu_root" name="ParcInfo" sequence="1"/>
+    <menuitem id="client_menu" name="Clients" parent="ParcInfo_menu_root" action="client_action"/>
+    <menuitem id="contract_menu" name="Contrats" parent="ParcInfo_menu_root" action="contract_action"/>
+    <menuitem id="parc_menu" name="Parcs" parent="ParcInfo_menu_root" action="action_parc_equipment"/>
+    <menuitem id="intervention_menu" name="Interventions" parent="ParcInfo_menu_root" action="intervention_action"/>
+    <menuitem id="incident_menu" name="Incidents" parent="ParcInfo_menu_root" action="incident_action"/>
+    <menuitem id="facture_menu" name="Factures" parent="ParcInfo_menu_root" action="facture_action"/>
+    <menuitem id="alerte_menu" name="Alertes" parent="ParcInfo_menu_root" action="alerte_action" sequence="1000"/>  
+</odoo>
