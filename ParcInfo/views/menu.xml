@@ -6,5 +6,8 @@
     <menuitem id="intervention_menu" name="Interventions" parent="ParcInfo_menu_root" action="intervention_action"/>
     <menuitem id="incident_menu" name="Incidents" parent="ParcInfo_menu_root" action="incident_action"/>
     <menuitem id="facture_menu" name="Factures" parent="ParcInfo_menu_root" action="facture_action"/>
-    <menuitem id="alerte_menu" name="Alertes" parent="ParcInfo_menu_root" action="alerte_action" sequence="1000"/>  
+    <menuitem id="alerte_menu" name="Alertes" parent="ParcInfo_menu_root" action="alerte_action" sequence="1000"/> 
+    <menuitem id="stock_menu" name="Stock" parent="ParcInfo_menu_root" action="action_article_stock" sequence="2000"/>
+    <menuitem id="portal_menu" name="Portal Client" parent="ParcInfo_menu_root" action="action_portal_client" sequence="3000"/>
+   
 </odoo>

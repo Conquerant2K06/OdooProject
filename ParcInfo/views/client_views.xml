@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+<record id="view_kanban_client_it" model="ir.ui.view">
+    <field name="name">parc.client.kanban</field>
+    <field name="model">parc.client</field>
+    <field name="arch" type="xml">
+      <kanban class="o_kanban_small_column">
+        <templates>
+          <t t-name="kanban-box">
+            <div class="o_kanban_record">
+              <div class="o_kanban_details">
+                <strong><field name="name"/></strong>
+                <div class="o_kanban_description">
+                  <field name="name" placeholder="Nom du client"/>
+                  <field name="email" placeholder="Email du client"/>
+                  <field name="partner_id"/>
+                  <field name="technical_contact_id"/>
+                  <field name="active"/>
+                  <field name="company_id" groups="base.group_multi_company"/>
+                  <field name="address" widget="text"/>
+                  <field name="phone"/>
+                </div>
+              </div>
+            </div>
+          </t>
+        </templates>
+      </kanban>
+    </field>
+</record>
+   
+  
+
   <!-- Vue formulaire -->
   <record id="view_form_client_it" model="ir.ui.view">
     <field name="name">parc.client.form</field>
@@ -13,10 +44,14 @@
             </h1>
           </div>
           <group>
+            <field name="password" placeholder="Mot de passe"/>
+            <field name="email" placeholder="Email du client"/>
             <field name="partner_id"/>
             <field name="technical_contact_id"/>
             <field name="active"/>
             <field name="company_id" groups="base.group_multi_company"/>
+            <field name="address" widget="text" placeholder="Adresse du client"/>
+            <field name="phone" placeholder="Numéro de téléphone"/>
           </group>
           <notebook>
             <page string="Parc IT">
@@ -52,7 +87,7 @@
   <record id="client_action" model="ir.actions.act_window">
     <field name="name">Clients</field>
     <field name="res_model">parc.client</field>
-    <field name="view_mode">form</field>
+    <field name="view_mode">kanban,form</field>
     <field name="help" type="html">
       <p class="o_view_nocontent_smiling_face">
         Créez votre premier client

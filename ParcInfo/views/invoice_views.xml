@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+<record id="view_parc_invoice_kanban" model="ir.ui.view">
+    <field name="name">parc.invoice.kanban</field>
+    <field name="model">parc.invoice</field>
+    <field name="arch" type="xml">
+        <kanban class="o_kanban_example" default_group_by="state">
+            <field name="name"/>
+            <field name="client_id"/>
+            <field name="contract_id"/>
+            <field name="invoice_date"/>
+            <field name="due_date"/>
+            <field name="amount"/>
+            <field name="currency_id"/>
+            <field name="state"/>
+            <field name="company_id"/>
+
+            <templates>
+                <t t-name="kanban-box">
+                    <div t-attf-class="oe_kanban_global_click o_kanban_card">
+                        <div class="o_kanban_record_top">
+                            <strong><field name="name"/></strong>
+                            <div><field name="client_id"/></div>
+                        </div>
+                        <div class="o_kanban_record_bottom">
+                            <span>
+                                Montant :
+                                <field name="amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </span><br/>
+                            <span>Date de facture : <field name="invoice_date"/></span><br/>
+                            <span>Échéance : <field name="due_date"/></span>
+                        </div>
+                        <div class="oe_kanban_footer">
+                            <span class="badge badge-info"><field name="state"/></span>
+                        </div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
     <!-- Formulaire de facture -->
     <record id="view_parc_invoice_form" model="ir.ui.view">
         <field name="name">parc.invoice.form</field>
@@ -135,7 +176,7 @@
     <record id="action_parc_invoice" model="ir.actions.act_window">
         <field name="name">Factures</field>
         <field name="res_model">parc.invoice</field>
-        <field name="view_mode">list,form,calendar,pivot,graph</field>
+        <field name="view_mode">kanban,list,form,calendar,pivot,graph</field>
         <field name="context">{'search_default_draft': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

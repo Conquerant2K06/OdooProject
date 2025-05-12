@@ -23,6 +23,7 @@ Ce module permet de gérer:
         'hr',
         'website',
         'portal',
+        'stock',
         
         
        
@@ -41,9 +42,11 @@ Ce module permet de gérer:
         'views/intervention.xml',
         'views/facture_views.xml',
         'views/alerte_views.xml',
-        'views/menu.xml',
         'views/templates.xml',
-        'views/admin_views.xml',
+        'views/stock_views.xml',
+        'views/menu.xml', 
+        'views/login_template.xml',
+        
     ],
     'demo': [],
     'installable': True,
@@ -52,6 +55,8 @@ Ce module permet de gérer:
     'license': 'LGPL-3',
     'assets': {
         'web.assets_backend': [
+            
+
            
         ],
     },

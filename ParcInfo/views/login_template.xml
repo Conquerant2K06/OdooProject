@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="login_template" name="Login Page">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="row justify-content-center mt-5">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="text-center">Connexion</h3>
+                            </div>
+                            <div class="card-body">
+                                <form t-attf-action="/ParcInfo/authenticate" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" name="email" id="email" class="form-control" required="required" t-att-value="email if email else ''"/>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <label for="password">Mot de passe</label>
+                                        <input type="password" name="password" id="password" class="form-control" required="required"/>
+                                    </div>
+                                    <div t-if="error" class="alert alert-danger mt-3">
+                                        <p t-esc="error"/>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-primary">Se connecter</button>
+                                    </div>
+                                </form>
+                                <!-- Bouton Admin -->
+                                <div class="text-center mt-3">
+                                    <a href="/admin/login" class="btn btn-link">Vous êtes admin ? Connectez-vous ici</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="admin_login_template" name="Admin Login Page">
+        <t t-call="website.layout">
+            <div class="container">
+                <div class="row justify-content-center mt-5">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="text-center">Connexion Administrateur</h3>
+                            </div>
+                            <div class="card-body">
+                                <form t-attf-action="/ParcInfo/authenticate" method="post">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="login_type" value="admin"/>
+                                    <div class="form-group">
+                                        <label for="email">Email</label>
+                                        <input type="email" name="email" id="email" class="form-control" required="required" t-att-value="email if email else ''"/>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <label for="password">Mot de passe</label>
+                                        <input type="password" name="password" id="password" class="form-control" required="required"/>
+                                    </div>
+                                    <div t-if="error" class="alert alert-danger mt-3">
+                                        <p t-esc="error"/>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-primary">Connexion Admin</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+</odoo>

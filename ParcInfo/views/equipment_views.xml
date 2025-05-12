@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Vue liste des types d'équipements -->
-    <record id="view_parc_equipment_type_list" model="ir.ui.view">
-        <field name="name">parc.equipment.type.list</field>
-        <field name="model">parc.equipment.type</field>
-        <field name="arch" type="xml">
-            <list>
-                <field name="name"/>
-                <field name="code"/>
-            </list>
-        </field>
-    </record>
-    
     <!-- Vue formulaire des types d'équipements -->
     <record id="view_parc_equipment_type_form" model="ir.ui.view">
         <field name="name">parc.equipment.type.form</field>
@@ -27,26 +15,27 @@
             </form>
         </field>
     </record>
-    
-    <!-- Vue liste des équipements -->
-    <record id="view_parc_equipment_list" model="ir.ui.view">
-        <field name="name">parc.equipment.list</field>
-        <field name="model">parc.equipment</field>
+
+    <!-- Vue Kanban des types d'équipements -->
+    <record id="view_parc_equipment_type_kanban" model="ir.ui.view">
+        <field name="name">parc.equipment.type.kanban</field>
+        <field name="model">parc.equipment.type</field>
         <field name="arch" type="xml">
-            <list>
-                <field name="reference"/>
+            <kanban class="o_kanban_small_column">
                 <field name="name"/>
-                <field name="type_id"/>
-                <field name="client_id"/>
-                <field name="user_id"/>
-                <field name="installation_date"/>
-                <field name="warranty_end_date" decoration-danger="warranty_end_date and warranty_end_date &lt; current_date"/>
-                <field name="state" widget="badge"/>
-                <field name="company_id" groups="base.group_multi_company"/>
-            </list>
+                <field name="code"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record">
+                            <strong><field name="name"/></strong>
+                            <div><span class="text-muted">Code: </span><field name="code"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
         </field>
     </record>
-    
+
     <!-- Vue formulaire des équipements -->
     <record id="view_parc_equipment_form" model="ir.ui.view">
         <field name="name">parc.equipment.form</field>
@@ -63,12 +52,8 @@
                         </button>
                     </div>
                     <div class="oe_title">
-                        <h1>
-                            <field name="reference" readonly="1"/>
-                        </h1>
-                        <h2>
-                            <field name="name" placeholder="Nom de l'équipement"/>
-                        </h2>
+                        <h1><field name="reference" readonly="1"/></h1>
+                        <h2><field name="name" placeholder="Nom de l'équipement"/></h2>
                     </div>
                     <group>
                         <group>
@@ -78,6 +63,7 @@
                             <field name="brand"/>
                             <field name="model"/>
                             <field name="serial_number"/>
+                            <field name="image"/>
                         </group>
                         <group>
                             <field name="installation_date"/>
@@ -110,7 +96,41 @@
             </form>
         </field>
     </record>
-    
+
+    <!-- Vue Kanban des équipements -->
+    <record id="view_parc_equipment_kanban" model="ir.ui.view">
+        <field name="name">parc.equipment.kanban</field>
+        <field name="model">parc.equipment</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="reference"/>
+                <field name="type_id"/>
+                <field name="client_id"/>
+                <field name="state"/>
+                <field name="warranty_end_date"/>
+                <field name="image"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record">
+                            <div class="o_kanban_details">
+                                <strong><field name="name"/></strong>
+                                <div><span class="text-muted">Réf:</span> <field name="reference"/></div>
+                                <div><span class="text-muted">Type:</span> <field name="type_id"/></div>
+                                <div><span class="text-muted">Client:</span> <field name="client_id"/></div>
+                                <div><span class="text-muted">État:</span> <field name="state"/></div>
+                                <div t-if="record.warranty_end_date.raw_value">
+                                    <span class="text-muted">Garantie:</span>
+                                    <field name="warranty_end_date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <!-- Vue de recherche pour les équipements -->
     <record id="view_parc_equipment_search" model="ir.ui.view">
         <field name="name">parc.equipment.search</field>
@@ -140,20 +160,18 @@
             </search>
         </field>
     </record>
-    
+
     <!-- Action pour les types d'équipements -->
     <record id="action_parc_equipment_type" model="ir.actions.act_window">
         <field name="name">Types d'équipements</field>
         <field name="res_model">parc.equipment.type</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,form</field>
     </record>
-    
+
     <!-- Action pour les équipements -->
     <record id="action_parc_equipment" model="ir.actions.act_window">
         <field name="name">Équipements</field>
         <field name="res_model">parc.equipment</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,form</field>
     </record>
-
-
 </odoo>

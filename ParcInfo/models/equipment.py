@@ -20,7 +20,7 @@ class Equipment(models.Model):
     _order = 'create_date desc'
     
     name = fields.Char(string='Nom', required=True, tracking=True)
-    reference = fields.Char(string='Référence', required=True, tracking=True, copy=False)
+    reference = fields.Char(string='Référence', tracking=True, copy=False)
     serial_number = fields.Char(string='Numéro de série', tracking=True)
     
     type_id = fields.Many2one('parc.equipment.type', string='Type d\'équipement', required=True)
@@ -52,7 +52,7 @@ class Equipment(models.Model):
     notes = fields.Text(string='Notes')
     incident_ids = fields.One2many('parc.incident', 'equipment_id', string='Incidents')
     incident_count = fields.Integer(compute='_compute_incident_count', string='Nombre d\'incidents')
-    
+    image = fields.Binary(string='Image', attachment=True, help="Image de l'équipement", required=True)
     # Champ pour lier l'équipement au partenaire (important pour le portail)
     partner_id = fields.Many2one('res.partner', string='Partenaire', 
                                  related='client_id.partner_id', store=True, 

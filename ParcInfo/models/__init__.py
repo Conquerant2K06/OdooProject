@@ -7,4 +7,4 @@ from . import intervention
 from . import contract
 from . import invoice
 from . import helpdesk_ticket
-from . import admin
+from . import stock

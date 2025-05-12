@@ -11,6 +11,9 @@ access_parc_alerte_user,parc.alerte.user,model_parc_alerte,ParcInfo.group_parc_i
 access_parc_alerte_manager,parc.alerte.manager,model_parc_alerte,ParcInfo.group_parc_info_manager,1,1,1,1
 access_account_move_user,parc.account.move.user,model_account_move,ParcInfo.group_parc_info_user,1,0,0,0
 access_account_move_manager,parc.account.move.manager,model_account_move,ParcInfo.group_parc_info_manager,1,1,1,1
-access_parc_admin,parc.admin,model_parc_admin,ParcInfo.group_parc_info_manager,1,1,1,1
 access_parc_equipment_type_user,parc.equipment.type.user,model_parc_equipment_type,ParcInfo.group_parc_info_user,1,0,0,0
 access_parc_equipment_type_manager,parc.equipment.type.manager,model_parc_equipment_type,ParcInfo.group_parc_info_manager,1,1,1,1
+access_article_stock_user,parc.stock.user,model_parc_stock,ParcInfo.group_parc_info_user,1,0,0,0
+access_article_stock_manager,parc.stock.manager,model_parc_stock,ParcInfo.group_parc_info_manager,1,1,1,1
+access_helpdesk_user,helpdesk.ticket.user,model_helpdesk_ticket,ParcInfo.group_parc_info_user,1,0,0,0
+access_helpdesk_manager,helpdesk.ticket.manager,model_helpdesk_ticket,ParcInfo.group_parc_info_manager,1,1,1,1

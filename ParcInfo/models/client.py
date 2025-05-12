@@ -6,13 +6,17 @@ class ParcClient(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Nom du client', required=True, tracking=True)
+    password = fields.Char(string='Mot de passe', required=True, tracking=True)
+    email = fields.Char(string='Email', required=True, tracking=True)
     partner_id = fields.Many2one('res.partner', string='Contact associé', required=True, tracking=True)
     active = fields.Boolean(default=True)
     company_id = fields.Many2one('res.company', string='Société', default=lambda self: self.env.company)
     asset_ids = fields.Many2many('parc.equipment', string='Équipements associés')
+    address = fields.Char(string='Adresse')
+    phone = fields.Char(string='Téléphone')
     # Référent technique côté client
     technical_contact_id = fields.Many2one('res.partner', string='Contact technique')
-    type_id = fields.Many2one('parc.client.type', string='Type de client', required=True, tracking=True)
+    type_id = fields.Many2one('parc.client.type', string='Type de client', tracking=True)
     # Relations inverses
     contract_ids = fields.One2many('parc.contract', 'client_id', string='Contrats')
     equipment_ids = fields.One2many('parc.equipment', 'client_id', string='Équipements')
@@ -35,3 +39,7 @@ class ParcClient(models.Model):
             client.contract_count = len(client.contract_ids)
             client.equipment_count = len(client.equipment_ids)
             client.incident_count = len(client.incident_ids)
+    
+    def soucrire_contrat(self):
+    # Logic to subscribe to a contract
+       pass

@@ -23,8 +23,6 @@ class ParcPortal(CustomerPortal):
             
         return values
     
-    
-
     @http.route(['/my/equipments', '/my/equipments/page/<int:page>'], type='http', auth="user", website=True)
     def portal_my_equipments(self, page=1, date_begin=None, date_end=None, sortby=None, filterby=None, **kw):
         """Page listant tous les équipements du client"""
